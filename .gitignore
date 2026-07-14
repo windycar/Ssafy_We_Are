@@ -1,0 +1,6 @@
+*.csv
+.env
+
+# Node/Vite가 로컬에서 생성하는 파일은 커밋하지 않는다.
+node_modules/
+dist/
