@@ -4,6 +4,8 @@
 "version": "1.0.0",
 "type": "module",
 "scripts": {
+"prepare-data": "node scripts/prepare-data.mjs",
+"prebuild": "npm run prepare-data",
 "dev": "vite",
 "build": "vite build",
 "preview": "vite preview"

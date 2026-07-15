@@ -4,9 +4,12 @@ import { fileURLToPath } from 'node:url'
 
 const project = join(dirname(fileURLToPath(import.meta.url)), '..')
 const source = join(project, '..', '데이터들', '광주_정제데이터')
+const newsSource = join(project, '..', '데이터들', '광주_news')
 const output = join(project, 'public', 'data')
 const cctvSource = JSON.parse(await readFile(join(source, 'cctv_gwangju.json'), 'utf8'))
 const policeSource = JSON.parse(await readFile(join(source, 'police_gwangju.json'), 'utf8'))
+const crimeNews = JSON.parse(await readFile(join(newsSource, 'gwangju_crime_news.json'), 'utf8'))
+const crimeNewsSummary = JSON.parse(await readFile(join(newsSource, 'gwangju_crime_news_summary.json'), 'utf8'))
 let policeCoordinates = []
 try { policeCoordinates = JSON.parse(await readFile(join(output, 'police_gwangju.coordinates.json'), 'utf8')) } catch {}
 const coordinateMap = new Map(policeCoordinates.map(item => [item.id, item]))
@@ -30,5 +33,7 @@ await Promise.all([
   writeFile(join(output, 'cctv_gwangju.clean.json'), JSON.stringify(cctv, null, 2)),
   writeFile(join(output, 'police_gwangju.clean.json'), JSON.stringify(police, null, 2)),
   writeFile(join(output, 'gwangju-data-summary.json'), JSON.stringify(summary, null, 2)),
+  writeFile(join(output, 'gwangju-crime-news.json'), JSON.stringify(crimeNews, null, 2)),
+  writeFile(join(output, 'gwangju-crime-news-summary.json'), JSON.stringify(crimeNewsSummary, null, 2)),
 ])
-console.log(`공공데이터 준비 완료: CCTV ${summary.cctvTotal}대/${summary.cctvMarkers}개 지점, 경찰 시설 ${summary.policeTotal}곳`)
+console.log(`데이터 준비 완료: CCTV ${summary.cctvTotal}대/${summary.cctvMarkers}개 지점, 경찰 시설 ${summary.policeTotal}곳, 범죄 기사 ${crimeNews.length}건`)
