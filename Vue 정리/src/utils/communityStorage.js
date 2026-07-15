@@ -1,9 +1,18 @@
-export const STORAGE_KEY = 'localhub-posts-v1'
-const SEED_KEY = 'localhub-posts-seeded-v1'
+export const STORAGE_KEY = 'safe-nav-posts-v1'
+const SEED_KEY = 'safe-nav-posts-seeded-v1'
+const LEGACY_STORAGE_KEY = 'localhub-posts-v1'
+const LEGACY_SEED_KEY = 'localhub-posts-seeded-v1'
 export const CATEGORIES = ['안전제보', '동네정보', '질문', '자유']
+
+function migrateLegacyStorage() {
+  const legacyPosts = localStorage.getItem(LEGACY_STORAGE_KEY)
+  if (!localStorage.getItem(STORAGE_KEY) && legacyPosts) localStorage.setItem(STORAGE_KEY, legacyPosts)
+  if (!localStorage.getItem(SEED_KEY) && localStorage.getItem(LEGACY_SEED_KEY)) localStorage.setItem(SEED_KEY, 'true')
+}
 
 export function getPosts() {
   try {
+    migrateLegacyStorage()
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
     return Array.isArray(value) ? value : []
   } catch {

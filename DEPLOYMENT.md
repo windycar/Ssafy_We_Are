@@ -1,4 +1,4 @@
-# Netlify 배포 가이드
+# safe_nav Netlify 배포 가이드
 
 ## 핵심 원칙
 
@@ -56,7 +56,7 @@ npm run build
 2. GitHub 저장소를 연결합니다.
 3. 저장소 루트를 선택한 상태에서 배포합니다. `netlify.toml`이 아래 설정을 자동 적용합니다.
    - Base directory: `Vue 정리`
-   - Build command: `npm install && npm run build`
+   - Build command: `npm run build`
    - Publish directory: `dist`
    - Functions directory: `netlify/functions`
 

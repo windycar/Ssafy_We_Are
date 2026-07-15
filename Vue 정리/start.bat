@@ -13,11 +13,11 @@ if not exist "node_modules" (
 )
 "%NODE%" scripts\prepare-data.mjs
 if errorlevel 1 goto error
-echo Starting LocalHub at http://localhost:5173
+echo Starting safe_nav at http://localhost:5173
 start "" http://localhost:5173
 call "%NPM%" run dev
 exit /b 0
 :error
-echo LocalHub could not start.
+echo safe_nav could not start.
 pause
 exit /b 1

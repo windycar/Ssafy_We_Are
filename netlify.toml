@@ -1,0 +1,10 @@
+[build]
+  base = "Vue 정리"
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

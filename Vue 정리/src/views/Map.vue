@@ -4,6 +4,8 @@ import { loadKakaoMap } from '../utils/kakaoMap'
 import { chooseRoutes, nearestFacilities } from '../utils/safetyRouting'
 
 const center = { lat: 35.1595, lng: 126.8526 }
+const recentSearchKey = 'safe-nav-route-recent-v1'
+const legacyRecentSearchKey = 'localhub-route-recent-v1'
 const mapEl = ref(null)
 const loading = ref(true)
 const error = ref('')
@@ -38,7 +40,10 @@ let blindCircles = []
 
 function readRecentSearches() {
   try {
-    const value = JSON.parse(localStorage.getItem('localhub-route-recent-v1') || '[]')
+    const current = localStorage.getItem(recentSearchKey)
+    const legacy = localStorage.getItem(legacyRecentSearchKey)
+    if (!current && legacy) localStorage.setItem(recentSearchKey, legacy)
+    const value = JSON.parse(current || legacy || '[]')
     return Array.isArray(value) ? value.slice(0, 5) : []
   } catch { return [] }
 }
@@ -232,7 +237,7 @@ async function findRoute() {
     routeChoices.value = chooseRoutes(unique, cctv.value, police.value)
     drawRoute(routeMode.value)
     recentSearches.value = [destinationAddress.value, ...recentSearches.value.filter(item => item !== destinationAddress.value)].slice(0, 5)
-    localStorage.setItem('localhub-route-recent-v1', JSON.stringify(recentSearches.value))
+    localStorage.setItem(recentSearchKey, JSON.stringify(recentSearches.value))
   } catch (event) {
     routeError.value = event instanceof TypeError ? 'TMAP 연결이 차단되었습니다. 네트워크 또는 CORS 설정을 확인해주세요.' : event.message
   } finally { routeLoading.value = false }
@@ -312,7 +317,7 @@ onBeforeUnmount(() => { routeLine?.setMap(null); alternateLine?.setMap(null); cl
             <span class="arrow">→</span>
             <div><i class="end-dot"></i><span><small>도착 주소</small><b>{{ destinationAddress }}</b></span></div>
           </div>
-          <div v-if="routeChoices" class="safety-method card"><b>LocalHub 안전 가중치</b><span>CCTV 밀도 30점</span><span>경찰 안전구역 18점</span><span>사각지대 없는 구간 14점</span><small>실제 TMAP 후보 3개를 비교하며 예상 시간은 동점 경로의 우선순위에 반영합니다.</small></div>
+          <div v-if="routeChoices" class="safety-method card"><b>safe_nav 안전 가중치</b><span>CCTV 밀도 30점</span><span>경찰 안전구역 18점</span><span>사각지대 없는 구간 14점</span><small>실제 TMAP 후보 3개를 비교하며 예상 시간은 동점 경로의 우선순위에 반영합니다.</small></div>
         </section>
       </section>
 

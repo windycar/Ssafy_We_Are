@@ -57,7 +57,7 @@ function toggle() { if (open.value) close(); else open.value = true }
 <template>
   <button class="floating" aria-label="안전 챗봇 열기" @click="toggle">{{ open ? '×' : '💬' }}<span v-if="!open">안전 도우미</span></button>
   <section v-if="open" class="chat card" aria-label="안전 챗봇">
-    <header><div><strong>LocalHub 안전 도우미</strong><small>광주 뉴스·안전 데이터 기반 AI 안내</small></div><button @click="close">×</button></header>
+    <header><div><strong>safe_nav 안전 도우미</strong><small>광주 뉴스·안전 데이터 기반 AI 안내</small></div><button @click="close">×</button></header>
     <div ref="listEl" class="messages"><div v-if="!messages.length" class="welcome"><b>무엇을 도와드릴까요?</b><p>광주 범죄·사고 기사, 예방 행동, 안전귀가 방법을 물어보세요.</p></div><div v-for="(message, index) in messages" :key="index" :class="['message', message.role]">{{ message.content }}</div><div v-if="sending" class="message assistant">관련 기사와 안전 정보를 확인하고 있습니다…</div><p v-if="error" class="chat-error">{{ error }}</p></div>
     <footer><textarea v-model="input" rows="2" placeholder="예: 북구 절도 기사와 예방법 알려줘" @keydown="keydown"></textarea><button :disabled="sending || !input.trim()" @click="send">전송</button></footer>
   </section>
