@@ -186,12 +186,9 @@ function drawRoute(mode) {
   blindCircles.forEach(circle => circle.setMap(null))
   blindCircles = []
   const selected = mode === 'safe' ? routeChoices.value.safest : routeChoices.value.fastest
-  const other = routeChoices.value.all.find(route => route.id !== selected.id) || selected
   routeInfo.value = selected
   const selectedPath = selected.coordinates.map(([lng, lat]) => new kakao.maps.LatLng(lat, lng))
-  const otherPath = other.coordinates.map(([lng, lat]) => new kakao.maps.LatLng(lat, lng))
-  alternateLine = new kakao.maps.Polyline({ map, path: otherPath, strokeWeight: 5, strokeColor: mode === 'safe' ? '#3277d5' : '#15966b', strokeOpacity: .3, strokeStyle: 'shortdash' })
-  routeLine = new kakao.maps.Polyline({ map, path: selectedPath, strokeWeight: 8, strokeColor: mode === 'safe' ? '#0f8a60' : '#3277d5', strokeOpacity: .92, strokeStyle: 'solid' })
+  routeLine = new kakao.maps.Polyline({ map, path: selectedPath, strokeWeight: 8, strokeColor: mode === 'safe' ? '#0f8a60' : '#3277d5', strokeOpacity: .95, strokeStyle: 'solid' })
   blindCircles = selected.blindSamples.slice(0, 24).map(point => new kakao.maps.Circle({ map, center: new kakao.maps.LatLng(point.lat, point.lng), radius: 65, strokeWeight: 2, strokeColor: '#df3f49', strokeOpacity: .65, fillColor: '#ef5350', fillOpacity: .13 }))
   analyseRoute(selected.features, selected)
   const bounds = new kakao.maps.LatLngBounds()
@@ -288,7 +285,7 @@ onBeforeUnmount(() => { routeLine?.setMap(null); alternateLine?.setMap(null); cl
           <div class="mode-label">경로 선택</div>
           <div class="route-options">
             <button :class="{ active: routeMode === 'shortest' }" @click="selectRouteMode('shortest')"><span class="route-icon blue-route">↗</span><div><b>최단 시간</b><small v-if="routeChoices">{{ Math.ceil(routeChoices.fastest.time / 60) }}분 · {{ (routeChoices.fastest.distance / 1000).toFixed(1) }}km · 안전 {{ routeChoices.fastest.safetyScore }}</small><small v-else>가장 빠른 보행 경로</small></div><em v-if="routeMode === 'shortest'">✓</em></button>
-            <button :class="{ active: routeMode === 'safe' }" @click="selectRouteMode('safe')"><span class="route-icon green-route">✓</span><div><b>최고 안전 <mark>추천</mark></b><small v-if="routeChoices">{{ Math.ceil(routeChoices.safest.time / 60) }}분 · CCTV {{ routeChoices.safest.cctvCount }}대 · 안전 {{ routeChoices.safest.safetyScore }}<template v-if="routeChoices.safest.id === routeChoices.fastest.id"> · 최단과 동일</template></small><small v-else>CCTV·치안시설·사각지대 가중치</small></div><em v-if="routeMode === 'safe'">✓</em></button>
+            <button :class="{ active: routeMode === 'safe' }" @click="selectRouteMode('safe')"><span class="route-icon green-route">✓</span><div><b>CCTV 우선 안전경로</b><small v-if="routeChoices">{{ Math.ceil(routeChoices.safest.time / 60) }}분 · CCTV {{ routeChoices.safest.cctvCount }}대 · 안전 {{ routeChoices.safest.safetyScore }}<template v-if="routeChoices.safest.id === routeChoices.fastest.id"> · 최단과 동일</template></small><small v-else>CCTV가 많은 구간과 사각지대가 적은 경로</small></div><em v-if="routeMode === 'safe'">✓</em></button>
           </div>
           <button class="find-button" :disabled="!hasDestination || routeLoading" @click="findRoute"><span>{{ routeLoading ? '경로 분석 중…' : '안전 경로 찾기' }}</span><b>→</b></button>
           <p v-if="routeError" class="mini-error">{{ routeError }}</p>

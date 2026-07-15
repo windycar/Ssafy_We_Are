@@ -53,8 +53,8 @@ function routeSamples(coordinates, interval = 100) {
 }
 
 export function scoreRoute(route, cctv, police) {
-  const cctvNear = cctv.filter(point => nearRoute(point, route.coordinates, 55))
-  const policeNear = police.filter(point => point.mapReady && nearRoute(point, route.coordinates, 120))
+  const cctvNear = cctv.filter(point => nearRoute(point, route.coordinates, 90))
+  const policeNear = police.filter(point => point.mapReady && nearRoute(point, route.coordinates, 180))
   const samples = routeSamples(route.coordinates)
   const blindSamples = samples.filter(sample => {
     const hasCctv = cctv.some(point => distanceMeters(sample, point) <= 90)
@@ -65,7 +65,10 @@ export function scoreRoute(route, cctv, police) {
   const distanceKm = Math.max(.2, route.distance / 1000)
   const density = weightedCctv / distanceKm
   const coverage = samples.length ? 1 - blindSamples.length / samples.length : 0
-  const rawScore = 38 + Math.min(30, density * 1.6) + Math.min(18, policeNear.length * 6) + coverage * 14
+  const cctvScore = Math.min(70, density * 2.4 + weightedCctv * 0.45)
+  const policeScore = Math.min(12, policeNear.length * 3.5)
+  const blindPenalty = blindSamples.length / Math.max(1, samples.length) * 24
+  const rawScore = 8 + cctvScore + policeScore + coverage * 16 - blindPenalty
   return {
     ...route,
     cctvCount: weightedCctv,
