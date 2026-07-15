@@ -298,7 +298,6 @@ onBeforeUnmount(() => { routeLine?.setMap(null); alternateLine?.setMap(null); cl
           <div v-if="routeInfo?.blindRatio > .2" class="blind-warning"><b>⚠ CCTV 사각 구간 주의</b><span>붉은 원으로 표시된 구간은 반경 90m 안에 CCTV·치안시설이 확인되지 않습니다.</span><button v-if="routeMode !== 'safe'" @click="selectRouteMode('safe')">안전 경로로 우회</button></div>
           <div class="layer-toggles">
             <label><input v-model="showCctv" type="checkbox"> CCTV</label>
-            <label><input v-model="showPolice" type="checkbox"> 경찰 안전구역</label>
             <label><input v-model="showHeatmap" type="checkbox"> 안전도 히트맵</label>
           </div>
           <div v-if="nearestPolice.length" class="nearest-box"><span>가까운 경찰시설</span><button v-for="item in nearestPolice" :key="item.id" @click="geocode(item.address)"><b>{{ item.name }}</b><small>{{ Math.round(item.distance) }}m · {{ item.type }}</small></button></div>
