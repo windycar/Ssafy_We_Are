@@ -1,7 +1,7 @@
 # safe_nav - 광주 안심 귀가 서비스
 
 > CCTV·경찰시설 공공데이터와 보행 경로를 결합해 더 안전한 귀가 경로와 지역 안전 정보를 제공하는 Vue 3 웹 애플리케이션입니다.
-jovial-phoenix-52d898.netlify.app 
+> 🌐 **배포 사이트:** [https://jovial-phoenix-52d898.netlify.app/](https://jovial-phoenix-52d898.netlify.app/)
 
 ## 주요 기능
 
